@@ -228,7 +228,7 @@
 .service-arrow { justify-self: end; color: var(--muted-foreground); }
 .service-arrow svg { width: 19px; height: 19px; transition: color 180ms ease, transform 180ms ease; }
 .service-row:hover .service-arrow svg { color: var(--primary); transform: translate(3px, -3px); }
-.work-section { padding-block: 126px 130px; }
+.work-section { padding-block: 32px 110px; scroll-margin-top: 24px; }
 .work-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; padding-block: 58px 38px; }
 .work-heading h2 { font-size: 68px; }
 .work-heading p { margin: 18px 0 0; color: var(--muted-foreground); font-size: 13px; }
@@ -239,8 +239,9 @@
 .filter-chip.is-active { background: var(--primary); color: var(--primary-foreground); }
 .filter-chip.is-active:hover { background: var(--primary); color: var(--primary-foreground); }
 .portfolio-count { flex: 0 0 auto; color: var(--muted-foreground); font-family: var(--font-display); font-size: 9px; letter-spacing: 1px; }
-.portfolio-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding-top: 22px; }
-.portfolio-item { min-width: 0; }
+.portfolio-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding-top: 22px; }
+.portfolio-item { min-width: 0; padding: 8px; border: 1px solid var(--border); background: var(--card); transition: border-color 180ms ease, transform 180ms ease; }
+.portfolio-item:hover { border-color: color-mix(in oklab, var(--primary) 55%, var(--border)); transform: translateY(-3px); }
 .instagram-placeholder, .instagram-embed { aspect-ratio: 4 / 4.7; min-height: 280px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--card); border: 1px solid var(--border); }
 .instagram-placeholder { position: relative; flex-direction: column; gap: 15px; text-align: center; background: radial-gradient(ellipse at center, color-mix(in oklab, var(--primary) 8%, transparent), transparent 55%), var(--card); }
 .instagram-placeholder::before { position: absolute; inset: 14px; content: ""; border: 1px dashed color-mix(in oklab, var(--primary) 28%, var(--border)); pointer-events: none; }
@@ -250,7 +251,9 @@
 .placeholder-category { color: var(--muted-foreground); font-size: 10px; }
 .instagram-embed { align-items: flex-start; background: var(--foreground); }
 .instagram-embed blockquote { width: 100% !important; max-width: 100% !important; min-width: 0 !important; margin: 0 auto !important; overflow: auto; }
-.portfolio-caption { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; color: var(--muted-foreground); font-family: var(--font-display); font-size: 9px; letter-spacing: .8px; text-transform: uppercase; }
+.instagram-embed.instagram-post-embed { display: block; width: 100%; min-height: 500px; aspect-ratio: auto; overflow: visible; border: 0; background: transparent; }
+.instagram-post-embed blockquote { overflow: visible !important; }
+.portfolio-caption { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 45px; padding: 12px 8px 4px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-family: var(--font-display); font-size: 9px; letter-spacing: .8px; text-transform: uppercase; }
 .portfolio-caption span:first-child { color: var(--foreground); }
 .portfolio-bottomline { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 11px; }
 .process-section { padding-block: 105px 116px; background: var(--card); border-block: 1px solid var(--border); }
@@ -334,7 +337,7 @@
   .hero-wrap { grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); }
   .hero-bottomline { align-items: start; flex-direction: column; gap: 18px; }
   .intro-grid h2, .work-heading h2 { font-size: 58px; }
-  .portfolio-grid { gap: 12px; }
+  .portfolio-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .principles-grid, .faq-layout, .contact-grid { gap: 6%; }
 }
 
@@ -378,7 +381,7 @@
   .service-row { min-height: 72px; grid-template-columns: 36px minmax(0, 1fr) 28px; }
   .service-name { font-size: 15px; }
   .service-arrow svg { width: 16px; height: 16px; }
-  .work-section { padding-block: 78px 84px; }
+  .work-section { padding-block: 44px 72px; scroll-margin-top: 20px; }
   .work-heading { display: block; padding-block: 40px 29px; }
   .work-heading p { margin-top: 13px; font-size: 11px; }
   .instagram-link { margin-top: 23px; }
@@ -386,8 +389,10 @@
   .portfolio-filters { width: 100%; flex-wrap: wrap; gap: 3px; }
   .filter-chip { padding-inline: 9px; font-size: 9px; }
   .portfolio-count { align-self: flex-end; margin-top: 5px; }
-  .portfolio-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px 10px; padding-top: 15px; }
+  .portfolio-grid { grid-template-columns: 1fr; gap: 16px; padding-top: 15px; }
+  .portfolio-item { padding: 7px; }
   .instagram-placeholder, .instagram-embed { min-height: 190px; aspect-ratio: 4 / 4.7; }
+  .instagram-embed.instagram-post-embed { min-height: 500px; aspect-ratio: auto; }
   .instagram-placeholder::before { inset: 8px; }
   .placeholder-index { top: 16px; left: 17px; font-size: 7px; }
   .placeholder-icon { width: 21px; height: 21px; }

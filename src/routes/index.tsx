@@ -18,11 +18,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { InstagramEmbed } from "@/components/InstagramEmbed";
-import mascot from "@/assets/av-designs-mascot.png.asset.json";
 import { portfolioItems, type PortfolioCategory } from "@/data/portfolio";
 
 const instagramUrl = "https://www.instagram.com/avdesign.in/";
 const whatsappNumber = "917351386456";
+const mascotUrl = "/av-designs-mascot.png";
 const categories = ["All", "Product", "Brand", "Fashion", "Social"] as const;
 const services = [
   "AI Product Posters",
@@ -42,8 +42,8 @@ const enquirySchema = z.object({
     .min(2, "Add your business name.")
     .max(100, "Keep your business name under 100 characters."),
   email: z.string().trim().email("Enter a valid email address.").max(254, "Email address is too long."),
-  service: z.enum(services, { error: "Choose a service." }),
-  budget: z.enum(budgets, { error: "Choose a budget range." }),
+  service: z.enum(services, { errorMap: () => ({ message: "Choose a service." }) }),
+  budget: z.enum(budgets, { errorMap: () => ({ message: "Choose a budget range." }) }),
   details: z
     .string()
     .trim()
@@ -170,7 +170,7 @@ function Index() {
           <div className="hero-art" aria-label="AV DESIGNS mascot">
             <span className="hero-orbit hero-orbit-one" aria-hidden="true" />
             <span className="hero-orbit hero-orbit-two" aria-hidden="true" />
-            <img src={mascot.url} alt="AV DESIGNS ghost mascot wearing headphones" fetchPriority="high" />
+            <img src={mascotUrl} alt="AV DESIGNS ghost mascot wearing headphones" fetchPriority="high" />
             <span className="art-index">A little<br />studio spirit <Sparkles aria-hidden="true" /></span>
           </div>
           <div className="hero-footer-row">
@@ -252,7 +252,7 @@ function Index() {
           ))}
         </div>
         <div className="portfolio-bottomline">
-          <span>Instagram posts appear here as they’re added.</span>
+          <span>Thirteen public posts, organized by creative category.</span>
           <a className="text-link" href={instagramUrl} target="_blank" rel="noreferrer">Visit @avdesign.in <ArrowUpRight aria-hidden="true" /></a>
         </div>
       </section>
@@ -352,7 +352,7 @@ function Index() {
               <a className="contact-direct-link" href={instagramUrl} target="_blank" rel="noreferrer">
                 <span>Find us on Instagram</span><ArrowUpRight aria-hidden="true" />
               </a>
-              <img src={mascot.url} alt="" loading="lazy" className="contact-mascot" />
+              <img src={mascotUrl} alt="" loading="lazy" className="contact-mascot" />
             </div>
             <form className="enquiry-form" onSubmit={handleEnquiry} noValidate>
               <div className="form-row">
