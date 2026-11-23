@@ -1,10 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
 import {
   ArrowDown,
   ArrowDownRight,
-  ArrowRight,
   ArrowUpRight,
   Check,
   Instagram,
@@ -19,37 +17,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { InstagramEmbed } from "@/components/InstagramEmbed";
 import { portfolioItems, type PortfolioCategory } from "@/data/portfolio";
+import { budgets, enquirySchema, services } from "@/lib/contact-schema";
+import { submitEnquiry } from "@/lib/contact.functions";
 
 const instagramUrl = "https://www.instagram.com/avdesign.in/";
 const whatsappNumber = "917351386456";
 const mascotUrl = "/av-designs-mascot.png";
 const categories = ["All", "Product", "Brand", "Fashion", "Social"] as const;
-const services = [
-  "AI Product Posters",
-  "Social Media Ad Creatives",
-  "Brand Identity & Branding",
-  "Product Photography & Visuals",
-  "Apparel & Fashion Campaigns",
-  "Social Media Content Design",
-] as const;
-const budgets = ["Under ₹10,000", "₹10,000–₹25,000", "₹25,000–₹50,000", "₹50,000+", "Not sure yet"] as const;
-
-const enquirySchema = z.object({
-  name: z.string().trim().min(2, "Add your name.").max(80, "Keep your name under 80 characters."),
-  business: z
-    .string()
-    .trim()
-    .min(2, "Add your business name.")
-    .max(100, "Keep your business name under 100 characters."),
-  email: z.string().trim().email("Enter a valid email address.").max(254, "Email address is too long."),
-  service: z.enum(services, { errorMap: () => ({ message: "Choose a service." }) }),
-  budget: z.enum(budgets, { errorMap: () => ({ message: "Choose a budget range." }) }),
-  details: z
-    .string()
-    .trim()
-    .min(20, "Share a little more about your project (at least 20 characters).")
-    .max(1400, "Keep project details under 1,400 characters."),
-});
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -76,39 +50,45 @@ function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("All");
   const [formMessage, setFormMessage] = useState("");
-  const [whatsappLink, setWhatsappLink] = useState("");
+  const [formHasError, setFormHasError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const visiblePortfolio = portfolioItems.filter(
     (item) => activeCategory === "All" || item.category === (activeCategory as PortfolioCategory),
   );
 
-  function handleEnquiry(event: FormEvent<HTMLFormElement>) {
+  async function handleEnquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormMessage("");
-    setWhatsappLink("");
+    setFormHasError(false);
 
-    const values = Object.fromEntries(new FormData(event.currentTarget));
+    const form = event.currentTarget;
+    const values = Object.fromEntries(new FormData(form));
     const result = enquirySchema.safeParse(values);
 
     if (!result.success) {
       setFormMessage(result.error.issues[0]?.message ?? "Please check the form and try again.");
+      setFormHasError(true);
       return;
     }
 
-    const { name, business, email, service, budget, details } = result.data;
-    const message = [
-      "Hello AV DESIGNS, I’d like to discuss a project.",
-      `Name: ${name}`,
-      `Business: ${business}`,
-      `Email: ${email}`,
-      `Service: ${service}`,
-      `Budget: ${budget}`,
-      `Project details: ${details}`,
-    ].join("\n");
-    const destination = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    setWhatsappLink(destination);
-    setFormMessage("Your message is ready. Open WhatsApp to review and send it.");
-    window.open(destination, "_blank", "noopener,noreferrer");
+    setIsSubmitting(true);
+    try {
+      const submission = await submitEnquiry({ data: result.data });
+      if (!submission.ok) {
+        setFormMessage("Please wait a minute before sending another enquiry.");
+        setFormHasError(true);
+        return;
+      }
+
+      form.reset();
+      setFormMessage("Thanks — your enquiry has been received and saved.");
+    } catch {
+      setFormMessage("We couldn't save your enquiry right now. Please try again or contact us on WhatsApp.");
+      setFormHasError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function closeMenu() {
@@ -376,15 +356,12 @@ function Index() {
               </label>
               <label className="form-field"><span>Tell us about your project</span><Textarea name="details" placeholder="What are you working on? What would you like to create?" rows={4} maxLength={1400} required /></label>
               <div className="form-submit-row">
-                <Button type="submit" className="cta-button">Prepare WhatsApp message <ArrowUpRight aria-hidden="true" /></Button>
-                <span>Opens WhatsApp to review and send.<br />This site does not store form submissions.</span>
+                <Button type="submit" className="cta-button" disabled={isSubmitting}>
+                  {isSubmitting ? "Sending…" : "Send enquiry"} <ArrowUpRight aria-hidden="true" />
+                </Button>
+                <span>Enquiries are saved securely.<br />Email alerts will be enabled after setup.</span>
               </div>
-              {formMessage && <p className="form-status" role="status">{formMessage}</p>}
-              {whatsappLink && (
-                <a className="whatsapp-fallback" href={whatsappLink} target="_blank" rel="noreferrer">
-                  Continue to WhatsApp <ArrowRight aria-hidden="true" />
-                </a>
-              )}
+              {formMessage && <p className={`form-status${formHasError ? " is-error" : ""}`} role={formHasError ? "alert" : "status"}>{formMessage}</p>}
             </form>
           </div>
         </div>

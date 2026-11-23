@@ -31,3 +31,4 @@ use the editor.
 
 ## Project architecture
 - Keep the AV DESIGNS site as one long-scrolling home page, with Instagram embeds reusable and post links held in a separate data file, so the portfolio stays easy to update without inventing work.
+- Handle public enquiry submissions with server-side validation and privileged inserts; keep submission records inaccessible to browser roles so visitors cannot read or alter private enquiries.
