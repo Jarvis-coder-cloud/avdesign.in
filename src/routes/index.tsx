@@ -1,13 +1,11 @@
 import { useState, type FormEvent } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowDown,
   ArrowDownRight,
   ArrowUpRight,
   Check,
-  Instagram,
   Menu,
-  MoveUpRight,
   Sparkles,
   X,
 } from "lucide-react";
@@ -15,15 +13,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { InstagramEmbed } from "@/components/InstagramEmbed";
-import { portfolioItems, type PortfolioCategory } from "@/data/portfolio";
+import { CinemaReel } from "@/components/CinemaReel";
 import { budgets, enquirySchema, services } from "@/lib/contact-schema";
 import { submitEnquiry } from "@/lib/contact.functions";
 
 const instagramUrl = "https://www.instagram.com/avdesign.in/";
 const whatsappNumber = "917351386456";
 const mascotUrl = "/av-designs-mascot.png";
-const categories = ["All", "Product", "Brand", "Fashion", "Social"] as const;
+const whatsappSampleUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+  "Hi AV DESIGNS, I saw your work and I'd like a free sample design for my brand.",
+)}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,14 +47,9 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("All");
   const [formMessage, setFormMessage] = useState("");
   const [formHasError, setFormHasError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const visiblePortfolio = portfolioItems.filter(
-    (item) => activeCategory === "All" || item.category === (activeCategory as PortfolioCategory),
-  );
 
   async function handleEnquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -107,6 +101,7 @@ function Index() {
             <a href="#about" onClick={closeMenu}>Studio</a>
             <a href="#services" onClick={closeMenu}>Services</a>
             <a href="#work" onClick={closeMenu}>Selected work</a>
+            <Link to="/portfolio" onClick={closeMenu}>Portfolio</Link>
             <a href="#process" onClick={closeMenu}>Process</a>
             <a href="#contact" onClick={closeMenu}>Contact</a>
           </nav>
@@ -131,6 +126,7 @@ function Index() {
             <a href="#about" onClick={closeMenu}>Studio <ArrowUpRight aria-hidden="true" /></a>
             <a href="#services" onClick={closeMenu}>Services <ArrowUpRight aria-hidden="true" /></a>
             <a href="#work" onClick={closeMenu}>Selected work <ArrowUpRight aria-hidden="true" /></a>
+            <Link to="/portfolio" onClick={closeMenu}>Portfolio <ArrowUpRight aria-hidden="true" /></Link>
             <a href="#process" onClick={closeMenu}>Process <ArrowUpRight aria-hidden="true" /></a>
             <a href="#contact" onClick={closeMenu}>Contact <ArrowUpRight aria-hidden="true" /></a>
           </nav>
@@ -194,48 +190,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="work-section section-shell" id="work" aria-labelledby="work-title">
-        <div className="section-kicker"><span>03 / SELECTED WORK</span><span>FROM THE AV DESIGNS INSTAGRAM</span></div>
-        <div className="work-heading">
-          <div>
-            <h2 id="work-title">Work that<br /><em>speaks first.</em></h2>
-            <p>A living collection of visuals from the studio.</p>
-          </div>
-          <a className="text-link instagram-link" href={instagramUrl} target="_blank" rel="noreferrer">
-            <Instagram aria-hidden="true" /> Follow on Instagram <MoveUpRight aria-hidden="true" />
-          </a>
-        </div>
-        <div className="portfolio-toolbar" aria-label="Filter Instagram posts">
-          <div className="portfolio-filters" role="group" aria-label="Filter portfolio by category">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                type="button"
-                variant="ghost"
-                size="sm"
-                className={`filter-chip${activeCategory === category ? " is-active" : ""}`}
-                aria-pressed={activeCategory === category}
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-          <span className="portfolio-count">{String(visiblePortfolio.length).padStart(2, "0")} POSTS</span>
-        </div>
-        <div className="portfolio-grid">
-          {visiblePortfolio.map((item) => (
-            <article className="portfolio-item" key={item.id}>
-              <InstagramEmbed url={item.instagramUrl} label={item.label} />
-              <div className="portfolio-caption"><span>{item.label}</span><span>{item.category}</span></div>
-            </article>
-          ))}
-        </div>
-        <div className="portfolio-bottomline">
-          <span>Thirteen public posts, organized by creative category.</span>
-          <a className="text-link" href={instagramUrl} target="_blank" rel="noreferrer">Visit @avdesign.in <ArrowUpRight aria-hidden="true" /></a>
-        </div>
-      </section>
+      <CinemaReel instagramUrl={instagramUrl} sampleUrl={whatsappSampleUrl} />
 
       <section className="process-section" id="process" aria-labelledby="process-title">
         <div className="section-shell">
